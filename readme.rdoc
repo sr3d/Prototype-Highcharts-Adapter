@@ -20,6 +20,8 @@ Just include the <b>highcharts-adapter.js</b> file before including highcharts. 
 
 Effects.js is not required but including it does provide animated entries and along with any other animations highchart users would expect.
 
+Remember to include excanvas.compiled.js in IE
+
 
 == License
 
