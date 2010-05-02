@@ -23,6 +23,10 @@ Effects.js is not required but including it does provide animated entries and al
 Remember to include excanvas.compiled.js in IE
 
 
+== Demo
+
+www.mikenelsons.com/highcharts[http://www.mikenelsons.com/highcharts]
+
 == License
 
  Copyright (c) 2010 Mike Nelson
