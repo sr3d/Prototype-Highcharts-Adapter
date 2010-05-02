@@ -8,9 +8,41 @@ Highcharts provides an adapter interface, allowing the backend functionality for
 
 == Usage
 
-Just include the _highcharts-adapter.js_ file before including highcharts. The adapter will set itself as a global variable which Highcharts utilizes instead of instantiating a jQuery or MooTools adapter. 
+Just include the <b>highcharts-adapter.js</b> file before including highcharts. The adapter will set itself as a global variable which Highcharts utilizes instead of instantiating a jQuery or MooTools adapter. 
 
  <script type="text/javascript" src="/javascripts/prototype.js"><script>
  <script type="text/javascript" src="/javascripts/effects.js"><script>
  <script type="text/javascript" src="/javascripts/highcharts-adapter.js"><script>
  <script type="text/javascript" src="/javascripts/highcharts.js"></script> 
+
+
+== Options
+
+Effects.js is not required but including it does provide animated entries and along with any other animations highchart users would expect.
+
+
+== License
+
+ Copyright (c) 2010 Mike Nelson
+
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation
+ files (the "Software"), to deal in the Software without
+ restriction, including without limitation the rights to use,
+ copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following
+ conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ OTHER DEALINGS IN THE SOFTWARE.
+ 
