@@ -47,7 +47,6 @@ var HighchartsAdapter = {
 			method: 'get',
 			evalJSON: 'force',
 			onSuccess: function(obj) {
-				console.log(obj.responseJSON);
 				callback(obj.responseJSON);
 			}
 		});
