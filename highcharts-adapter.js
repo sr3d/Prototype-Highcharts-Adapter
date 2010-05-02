@@ -6,9 +6,9 @@ if(typeof Prototype == 'undefined')
 var HighchartsAdapter = {
 	
 	addEvent: function (el, event, fn){
-		if(el.attachEvent)
-			Event.observe(el, event, fn);
-		else{
+		if($(el).observe)
+			Event.observe($(el), event, fn);
+		else {
 			HighchartsAdapter._extend(el);
 			el.observe_event(event, fn);
 		}
@@ -24,26 +24,25 @@ var HighchartsAdapter = {
 			$(el).setStyle(string);
 	},
 	
-	each: function(arr, fn) { // done
+	each: function(arr, fn) { 
 		arr.each(fn);
 	},
 	
-	fireEvent: function(el, event, eventArguments, defaultFunction) { // done
+	fireEvent: function(el, event, eventArguments, defaultFunction) { 
 		if(event.preventDefault){
 			defaultFunction = null;
 		}
 		
-		if(el.attachEvent)
+		if($(el).observe)
 			el.fire(event, eventArguments);
-		else if(el._highcharts_extended){
+		else if(el._highcharts_extended)
 			el.fire_event(event, eventArguments);
-		}
 		
 		
 		if(defaultFunction) defaultFunction(event);
 	},
 	
-	getAjax: function (url, callback) { // done
+	getAjax: function (url, callback) { 
 		new Ajax.Request(url, {
 			method: 'get',
 			onSuccess: function(obj) {
@@ -52,15 +51,15 @@ var HighchartsAdapter = {
 		});
 	},
 	
-	grep: function(arr, fn) { // done
+	grep: function(arr, fn) { 
 		return arr.findAll(fn);
 	},
 	
-	hyphenate: function (str) { // done
+	hyphenate: function (str) { 
 		return str.replace(/([A-Z])/g, function(a, b){ return '-'+ b.toLowerCase() });
 	},
 	
-	map: function(arr, fn) { // done
+	map: function(arr, fn) { 
 		return arr.collect(fn);
 	},
 	
@@ -70,7 +69,7 @@ var HighchartsAdapter = {
 			for (var key in original) {
 				value = original[key];
 				if  (value && typeof value == 'object' && value.constructor != Array) { 
-					copy[key] = doCopy(copy[key] || {}, value); // copy
+					copy[key] = doCopy(copy[key] || {}, value);
 
 				} else {
 					copy[key] = original[key];
@@ -107,7 +106,7 @@ HighchartsAdapter._extend = function(object){
 			},
 			fire_event : function(name, args){
 				(this._highchart_events[name] || []).each(function(fn){
-					if(args.stopped) 
+					if(args && args.stopped) 
 						return; // "throw $break" wasn't working. i think because of the scope of 'this'.
 					fn.bind(this)(args);
 				}.bind(this));

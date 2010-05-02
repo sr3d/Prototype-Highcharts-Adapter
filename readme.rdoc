@@ -10,9 +10,9 @@ Highcharts provides an adapter interface, allowing the backend functionality for
 
 Just include the <b>highcharts-adapter.js</b> file before including highcharts. The adapter will set itself as a global variable which Highcharts utilizes instead of instantiating a jQuery or MooTools adapter. 
 
- <script type="text/javascript" src="/javascripts/prototype.js"><script>
- <script type="text/javascript" src="/javascripts/effects.js"><script>
- <script type="text/javascript" src="/javascripts/highcharts-adapter.js"><script>
+ <script type="text/javascript" src="/javascripts/prototype.js"></script>
+ <script type="text/javascript" src="/javascripts/effects.js"></script>
+ <script type="text/javascript" src="/javascripts/highcharts-adapter.js"></script>
  <script type="text/javascript" src="/javascripts/highcharts.js"></script> 
 
 

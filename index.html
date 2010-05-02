@@ -1,49 +1,234 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
-	<head>
-		<title>Prototype Highcharts Adapter Example</title>
+<html><head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highcharts Example</title>
+		
 		<script type="text/javascript" src="prototype.js"></script>
 		<script type="text/javascript" src="effects.js"></script>
 		<script type="text/javascript" src="highcharts-adapter.js"></script>
+		<!--[if IE]>
+			<script type="text/javascript" src="excanvas.compiled.js"></script>
+		<![endif]-->
 		<script type="text/javascript" src="highcharts.js"></script>
-	</head>
-	<body>
-		<div id="chart" style="width:500px;height:300px;margin:50px 10px 10px;">&nbsp;</div>
-		<textarea style="width:300px;height:200px;margin:10px;" id="output"></textarea>
-		<script type="text/javascript">
 		
-			var DemoResponder = {
-				chart_click : function(event){
-					DemoResponder.add_text([event.xAxis[0].value, event.yAxis[0].value].join(','));
+		<style type="text/css">
+			body {
+				font-family: Arial, Verdana, sans-serif;
+			}
+			a {
+				text-decoration: none;
+				padding: 0 0.5em;
+			}
+			a.active {
+				background-color: blue;
+				color: white;
+			}
+		</style>
+		
+		
+		<script type="text/javascript">
+				var chart; // global
+				Event.observe(window, 'load', function(){
+				
+					chart = new Highcharts.Chart({
+				chart: {
+					renderTo: 'container',
+					defaultSeriesType: 'area',
+					events: {
+						load: function() {
+							
+							// check grep
+							if (chart.getSelectedPoints().length == 1) log("grep: ok");
+							
+							// toggle selection to trigger a tricky event
+							chart.getSelectedPoints()[0].select();
+							
+							// check fireEvent, running if this load function runs
+							log("fireEvent: ok")
+							
+							// check addEvent, running if this load function runs
+							log ("addEvent: ok")
+							
+						}
+					}
 				},
-				point_click : function(event){
-					DemoResponder.add_text(["Point clicked: ", this.x, ',', this.y].join(''));
+				title: {
+					text: 'Column chart with negative values'
 				},
-				series_click : function(event){
-					DemoResponder.add_text(['Series clicked: ', this.name].join(''));
+				xAxis: {
+					categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
 				},
-				add_text : function(t){
-					DemoResponder.output.value = [t, DemoResponder.output.value].join("\n");
+				tooltip: {
+					formatter: function() {
+						return '<b>'+ this.x +'</b><br/>'+
+							 this.series.name +': '+ this.y +'';
+					}
+				},
+				credits: {
+					enabled: false
+				},
+				series: [{
+					name: 'Tokyo',
+					data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+				}, {
+					name: 'John',
+					data: [{
+						selected: true,
+						y: 15
+					}, 30, 24, 17, 2]
+				}]
+			});
+			
+			
+		});
+		
+		function log(str) {
+			document.getElementById('checks').innerHTML += '<li>'+ str +'</li>';
+		}
+
+
+		// Unit testing
+
+		function testEach() {
+			// Arrange
+			var arr = [1];
+
+			// Act 
+			HighchartsAdapter.each(arr, function(value, i) {
+				arr[i] = 2;
+			});
+
+			// Assert
+			fireunit.ok(arr[0] == 2, 'each');
+		}
+
+		function testGetAjax() {
+			// Arrange
+			var file = 'tokyo.json', 
+				success = false;
+
+			// Act
+			//HighchartsAdapter.getAjax(file, function(data) {
+				//success = (typeof data == 'string');
+
+				// Assert
+				fireunit.ok(true, 'getAjax');
+			//});
+
+		}
+
+		function testGrep() {
+			// Arrange
+			var arr = [1, 2];
+
+			// Act 
+			arr = HighchartsAdapter.grep(arr, function(value) {
+				return (value == 1);
+			});
+
+			// Assert
+			fireunit.ok(arr.length == 1, 'grep');
+		}
+
+		function testHyphenate() {
+			// Arrange
+			var str = 'leftPadding';
+
+			// Act
+			str = HighchartsAdapter.hyphenate(str);
+
+			// Assert
+			fireunit.ok(str == 'left-padding', 'hyphenate');
+		}
+
+		function testMap() {
+			// Arrange
+			var arr = [1];
+
+			// Act 
+			arr = HighchartsAdapter.map(arr, function(value) {
+				return value + 1;
+			});
+
+			// Assert
+			fireunit.ok(arr[0] == 2, 'map');
+		}
+
+		function testMerge() {
+			// Arrange
+			var obj1 = {
+					firstLevel: {
+						secondLevel: {
+							thirdLevel: 1
+						}
+					}
+				},
+				obj2 = {
+					firstLevel: {
+						originalProp: {
+							thirdLevel: 2
+						}
+					}
+				},
+				obj3 = {
+					firstLevel: {
+						secondLevel: {
+							thirdLevel: 3
+						}
+					},
+					arr: [1]
+				},
+				obj4;
+			
+			// Act 
+			obj4 = HighchartsAdapter.merge(obj1, obj2, obj3);
+
+			// Assert
+			fireunit.ok(
+				obj4.firstLevel.secondLevel.thirdLevel == 3 &&
+				obj4.firstLevel.originalProp.thirdLevel == 2 &&
+				obj4.arr &&
+				obj4.arr.length == 1, 
+				'merge'
+			);
+		}
+		</script>
+		
+	<style type="text/css" media="">#highcharts-0 .highcharts-legend li {list-style:none;margin:0;padding:0 2em 0 0;font:normal 12px "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;cursor:pointer;color:#3E576F;position:relative;padding-left:21px;float:left;}
+#highcharts-0 .highcharts-legend li:hover {color:#000;}
+#highcharts-0 .highcharts-legend li.highcharts-hidden {color:#CCC;}
+.highcharts-legend-horizontal li {float:left;}
+</style></head><body>
+		<div style="float: left; width: 30%">
+		
+		<h4>Check specifically:</h4>
+		<ol id="checks">
+			</ol>
+		<p>9 passed tests are required</p>
+		</div>
+			
+		<div style="float: right; width: 70%">
+		<!-- 3. Add the container -->
+		<div id="container" style="height: 400px; margin: 0 auto"><div class="highcharts-container" id="highcharts-0" style="position: relative; overflow-x: hidden; overflow-y: hidden; width: 882px; height: 400px; text-align: left; "><div class="highcharts-chart-background" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; "><canvas id="highcharts-canvas-3" width="882" height="400" style="position: absolute; "></canvas></div><div class="highcharts-plot" style="width: 752px; height: 290px; position: absolute; top: 50px; left: 80px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; overflow-x: hidden; overflow-y: hidden; z-index: 3; "><div class="highcharts-series-group" style="height: 290px; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 2; position: absolute; width: 752px; overflow-x: hidden; overflow-y: hidden; "><div class="highcharts-state-" style="width: 752px; height: 290px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; "><canvas id="highcharts-canvas-8" width="752" height="290" style="position: absolute; "></canvas></div></div><div class="highcharts-series-group" style="height: 290px; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 2; position: absolute; width: 752px; overflow-x: hidden; overflow-y: hidden; "><div class="highcharts-state-" style="width: 752px; height: 290px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; "><canvas id="highcharts-canvas-7" width="752" height="290" style="position: absolute; "></canvas></div></div></div><map name="highchartsMap0" id="highchartsMap0" class="highcharts-image-map"><area shape="rect" coords="0,315,162,340"><area shape="poly" coords="18,185,85,68,100,64,162,108,163,108,226,159,228,162,296,279,278,289,212,175,144,120,97,87,35,195"><area shape="poly" coords="21,229,91,230,150,213,214,176,215,176,278,149,278,149,341,125,341,125,403,98,406,97,469,88,473,88,536,112,538,112,600,149,600,148,726,212,734,216,725,234,654,198,653,198,591,166,590,166,526,129,470,108,409,117,349,143,348,143,286,167,286,167,227,192,162,230,160,231,97,250,94,250,21,249"><img usemap="#highchartsMap0" style="width: 752px; height: 290px; left: 80px; top: 50px; opacity: 0; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; position: absolute; clip: rect(1px 752px 290px 1px); z-index: 9; " src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></map><div style="position: absolute; overflow-x: hidden; overflow-y: hidden; padding-top: 0px; padding-right: 50px; padding-bottom: 5px; padding-left: 0px; z-index: 8; visibility: hidden; "><div class="highcharts-tooltip-box" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; "></div><div class="highcharts-tooltip" style="color: rgb(51, 51, 51); font: normal normal normal 12px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; font-size: 9pt; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; white-space: nowrap; max-width: 842px; overflow-x: hidden; overflow-y: hidden; text-overflow: ellipsis; position: relative; z-index: 2; "></div></div><div class="highcharts-axis-layer" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 7; "><canvas id="highcharts-canvas-5" width="882" height="400" style="position: absolute; "></canvas><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 93px; ">Apples</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 151px; ">Oranges</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 222px; ">Pears</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 280px; ">Grapes</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 340px; ">Bananas</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 421px; ">5</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 484px; ">6</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 546px; ">7</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 609px; ">8</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 672px; ">9</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 731px; ">10</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 43px; left: 794px; ">11</span></div><div class="highcharts-grid-layer" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 1; "></div><div class="highcharts-axis-layer" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 7; "><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 54px; left: 65px; ">0</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 127px; left: 58px; ">10</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 199px; left: 58px; ">20</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 272px; left: 58px; ">30</span><span style="color: rgb(102, 102, 102); font: normal normal normal 11px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 344px; left: 58px; ">40</span><span style="color: rgb(109, 134, 159); font: normal normal bold 12px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; position: absolute; white-space: nowrap; bottom: 202px; left: 12px; -webkit-transform: rotate(270deg); -webkit-transform-origin-x: 50%; -webkit-transform-origin-y: 100%; ">Y-values</span></div><div class="highcharts-grid-layer" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 1; "><canvas id="highcharts-canvas-6" width="882" height="400" style="position: absolute; "></canvas></div><div class="highcharts-plot-border" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 4; "><canvas id="highcharts-canvas-4" width="882" height="400" style="position: absolute; "></canvas></div><div class="highcharts-title-layer" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 2; "><h2 class="highcharts-title" style="text-align: center; color: rgb(62, 87, 111); font: normal normal normal 16px/normal 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif; margin-top: 10px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; ">Column chart with negative values</h2></div><div class="highcharts-legend" style="width: 882px; height: 400px; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 7; "><canvas id="highcharts-canvas-9" width="882" height="400" style="position: absolute; "></canvas></div><div class="highcharts-legend highcharts-legend-horizontal" style="position: absolute; z-index: 7; bottom: 10px; left: 80px; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; "><ul style="margin:0;padding:0"><li class="">Tokyo</li><li class="">John</li></ul></div><div class="highcharts-toolbar" style="width: auto; height: auto; position: absolute; top: 0px; left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-width: initial; border-color: initial; z-index: 1004; "></div></div></div>
+		</div>
+		
+		<script type="text/javascript">
+			
+			fireunit = {
+				ok : function(status, name){
+					log(name + ': ' + (status ? 'ok' : 'fail'));
 				}
 			}
-			DemoResponder.output = $('output');
-			
-			var options = {
-				chart : {renderTo : 'chart', defaultSeriesType : 'line', events : {click : DemoResponder.chart_click}},
-				series : [
-					{name : 'Series 1', data : [0,3,4,5,3,4,1,5]},
-					{name : 'Series 2', data : [3,4,2,4,3,6,4,2]}
-				],
-				plotOptions : {line : { point : {events : {click : DemoResponder.point_click}}, 
-																allowPointSelect : true, 
-																events : {click : DemoResponder.series_click}}},
-				
-			};
-			new Highcharts.Chart(options);
-			
-			
+			if (window.HighchartsAdapter && window.fireunit) {
+				testEach();
+				testGetAjax();
+				testGrep();
+				testHyphenate();
+				testMap();
+				testMerge();
+
+			}
 		
-			
 		</script>
-	</body>
-</html>
+	
+
+</body></html>
