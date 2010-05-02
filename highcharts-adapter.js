@@ -45,8 +45,10 @@ var HighchartsAdapter = {
 	getAjax: function (url, callback) { 
 		new Ajax.Request(url, {
 			method: 'get',
+			evalJSON: 'force',
 			onSuccess: function(obj) {
-				callback(obj.responseText);
+				console.log(obj.responseJSON);
+				callback(obj.responseJSON);
 			}
 		});
 	},
