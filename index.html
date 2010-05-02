@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<title>Prototype Highcharts Adapter Example</title>
+		<script type="text/javascript" src="prototype.js"></script>
+		<script type="text/javascript" src="effects.js"></script>
+		<script type="text/javascript" src="highcharts-adapter.js"></script>
+		<script type="text/javascript" src="highcharts.js"></script>
+	</head>
+	<body>
+		<div id="chart" style="width:500px;height:300px;margin:50px 10px 10px;">&nbsp;</div>
+		<textarea style="width:300px;height:200px;margin:10px;" id="output"></textarea>
+		<script type="text/javascript">
+		
+			var DemoResponder = {
+				chart_click : function(event){
+					DemoResponder.add_text([event.xAxis[0].value, event.yAxis[0].value].join(','));
+				},
+				point_click : function(event){
+					DemoResponder.add_text(["Point clicked: ", this.x, ',', this.y].join(''));
+				},
+				series_click : function(event){
+					DemoResponder.add_text(['Series clicked: ', this.name].join(''));
+				},
+				add_text : function(t){
+					DemoResponder.output.value = [t, DemoResponder.output.value].join("\n");
+				}
+			}
+			DemoResponder.output = $('output');
+			
+			var options = {
+				chart : {renderTo : 'chart', defaultSeriesType : 'line', events : {click : DemoResponder.chart_click}},
+				series : [
+					{name : 'Series 1', data : [0,3,4,5,3,4,1,5]},
+					{name : 'Series 2', data : [3,4,2,4,3,6,4,2]}
+				],
+				plotOptions : {line : { point : {events : {click : DemoResponder.point_click}}, 
+																allowPointSelect : true, 
+																events : {click : DemoResponder.series_click}}},
+				
+			};
+			new Highcharts.Chart(options);
+			
+			
+		
+			
+		</script>
+	</body>
+</html>
