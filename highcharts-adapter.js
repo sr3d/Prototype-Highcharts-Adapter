@@ -47,7 +47,7 @@ var HighchartsAdapter = {
 			el._highcharts_fire(event, eventArguments);
 		
 		
-		if(defaultFunction) defaultFunction(event);
+		if(defaultFunction) defaultFunction(eventArguments);
 	},
 	
 	// request data from <url>. for now, forcing json parsing even though this may change if highcharts uses other formats.
