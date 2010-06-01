@@ -27,6 +27,12 @@ Remember to include excanvas.compiled.js in IE
 
 {Demo Page}[http://www.mikenelsons.com/highcharts]
 
+
+== Contributors
+
+{Mike Nelson}[http://www.github.com/mnelson]
+dizzy2[http://github.com/dizzy2]
+
 == License
 
  Copyright (c) 2010 Mike Nelson
