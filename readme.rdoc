@@ -25,7 +25,7 @@ Remember to include excanvas.compiled.js in IE
 
 == Demo
 
-www.mikenelsons.com/highcharts[http://www.mikenelsons.com/highcharts]
+{http://www.mikenelsons.com/highcharts}[http://www.mikenelsons.com/highcharts]
 
 == License
 
