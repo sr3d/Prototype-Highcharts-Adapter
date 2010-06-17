@@ -113,7 +113,6 @@
 			}
 			
 			new Highcharts.Chart(shared_options);
-			shared_options.chart.renderTo = 'container3';
 		//	new Highcharts.Chart(shared_options);
 		});
 		
@@ -280,7 +279,7 @@
 			}
 		
 		</script>
-		<a href="#" style="padding:5px 20px;border:1px solid #942;background-color:#c63;color:white;" onclick="new Effect.Move('y_mover', {x : (moved ? 0 : 400), y : 0, mode : 'absolute'});moved = (moved ? false : true);return false;">Move It!</a>
+		<a href="#" style="padding:5px 20px;border:1px solid #942;background-color:#c63;color:white;" onclick="new Effect.Move('y_mover', {x : (moved ? 0 : 150), y : 0, mode : 'absolute'});moved = !moved;return false;">Move It!</a>
 		<div style="clear:both;position:relative;">
 			<div id="y_mover" style="position:absolute;height:400px;width:800px;">
 				<div style="position:relative;">
